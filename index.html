@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reference Checker</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 16px;
+      color: #1a202c;
+      background: #fafafa;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    p.hint { color: #666; font-size: 0.9rem; line-height: 1.5; }
+    textarea {
+      width: 100%;
+      height: 260px;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.9rem;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      resize: vertical;
+    }
+    .row { margin-top: 14px; display: flex; align-items: center; gap: 12px; }
+    button {
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover { background: #2c5282; }
+    .error {
+      color: #822727;
+      background: #fed7d7;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+    }
+    .styles-note {
+      margin-top: 24px;
+      font-size: 0.82rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reference Checker</h1>
+  <p class="hint">
+    Paste a bibliography below (either one reference per line, or with a blank
+    line between entries), or upload a .txt file. Each reference is checked
+    against Crossref and OpenAlex, and mismatched or missing fields are flagged.
+  </p>
+
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+  <form action="/check" method="post" enctype="multipart/form-data">
+    <textarea name="references"
+      placeholder="Fasuan, T. M. (2023). Okra mucilage films for postharvest fruit coating. Journal of Postharvest Science, 8(2), 45-58.
+
+Bello, K. (2022). Another reference here..."></textarea>
+    <div class="row">
+      <label class="hint">Or upload a file:</label>
+      <input type="file" name="file" accept=".txt">
+    </div>
+    <div class="row">
+      <button type="submit">Check References</button>
+    </div>
+  </form>
+
+  <p class="styles-note">
+    Citation style (APA, MLA, Chicago, Harvard, Vancouver) is detected automatically
+    per reference -- the corrected entry is written back in the same style as the original.
+  </p>
+</body>
+</html>

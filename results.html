@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Results - Reference Checker</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px;
+      color: #1a202c;
+      background: #fafafa;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    a.back {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #2b6cb0;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    a.back:hover { text-decoration: underline; }
+    .summary {
+      margin-bottom: 20px;
+      font-size: 0.88rem;
+      color: #744210;
+      background: #fefcbf;
+      padding: 10px 14px;
+      border-radius: 6px;
+    }
+    .ref {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .status {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .status-verified              { background: #c6f6d5; color: #22543d; }
+    .status-verified_with_corrections { background: #fefcbf; color: #744210; }
+    .status-possible_mismatch     { background: #feebc8; color: #7b341e; }
+    .status-flagged_unverifiable  { background: #fed7d7; color: #822727; }
+    .status-unable_to_verify      { background: #e2e8f0; color: #4a5568; }
+    .status-invalid               { background: #e2e8f0; color: #4a5568; }
+    .style-tag {
+      font-size: 0.72rem;
+      color: #888;
+      text-transform: uppercase;
+      margin-left: 8px;
+      letter-spacing: 0.04em;
+    }
+    .original {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.85rem;
+      color: #4a5568;
+      margin: 10px 0;
+    }
+    ul.issues {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      font-size: 0.85rem;
+      color: #744210;
+    }
+    .corrected {
+      background: #f7fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      border-left: 3px solid #2b6cb0;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="/">&larr; Check another list</a>
+  <h1>Results</h1>
+
+  {% if report.initials_consistency.flagged_indices %}
+    <div class="summary">
+      Author-initials formatting is inconsistent at entr{{ 'y' if report.initials_consistency.flagged_indices|length == 1 else 'ies' }}
+      {{ report.initials_consistency.flagged_indices|map('string')|join(', ') }}
+      (dominant style across the list: {{ report.initials_consistency.dominant_style }}).
+    </div>
+  {% endif %}
+
+  {% for r in report.results %}
+    <div class="ref">
+      <span class="status status-{{ r.status }}">{{ r.status.replace('_', ' ') }}</span>
+      {% if r.detected_style %}<span class="style-tag">{{ r.detected_style }}</span>{% endif %}
+
+      <div class="original">{{ r.original_text }}</div>
+
+      {% if r.issues %}
+        <ul class="issues">
+          {% for issue in r.issues %}<li>{{ issue }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if r.corrected_entry %}
+        <div class="corrected">{{ r.corrected_entry }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</body>
+</html>
