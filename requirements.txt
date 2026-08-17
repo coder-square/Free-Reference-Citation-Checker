@@ -1,0 +1,7 @@
+streamlit
+requests
+rapidfuzz
+python-docx
+pdfplumber
+openpyxl
+pandas
